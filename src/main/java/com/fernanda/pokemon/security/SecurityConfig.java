@@ -30,10 +30,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf()
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .and()
-//                .csrf().disable()
+//                .csrf()
+//                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+//                .and()
+                .csrf().disable()
                 /*
                 * O CSRF significa cross site request forgery, e acontece quando uma solicitação HTTP não autorizada é enviada
                 * para um site de confiança do usuário, e para garantir que isso não aconteça, o Spring habilita o CSRF por padrão.
@@ -51,7 +51,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest()
                 .authenticated()
                 .and()
-                .httpBasic(); //autenticação básica, não é possível fazer logout
+                .formLogin()
+                .loginPage("/login").permitAll();
+//                .httpBasic(); //autenticação básica, não é possível fazer logout
     }
 
     @Override
