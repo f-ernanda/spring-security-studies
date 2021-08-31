@@ -15,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
+import java.util.concurrent.TimeUnit;
+
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true) //para permitir o preAuthorize()
@@ -39,7 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 * para um site de confiança do usuário, e para garantir que isso não aconteça, o Spring habilita o CSRF por padrão.
                 * Para então que o frontend consiga fazer o CRUD, o Spring envia um token CSRF por meio de um cookie que o frontend usa
                 * nos forms. Com isso, quando a solicitação HTTP é feita, o Spring valida esse token, e se for o mesmo, a solicitação é aceita.
-                * */
+                */
                 .authorizeRequests()
                 .antMatchers("/", "index", "/css/*", "/js/*")//não precisa de senha nesses patterns...
                 .permitAll() //...graças a essa permissão
@@ -53,7 +55,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin()
                 .loginPage("/login").permitAll()
-                .defaultSuccessUrl("/team", true);
+                .defaultSuccessUrl("/team", true)
+                .and()
+                .rememberMe()
+                .tokenValiditySeconds((int)TimeUnit.DAYS.toSeconds(21)).key("keysupersegura");
+                /*
+                * O spring security garante que o sessionId expire depois de 30 minutos de inatividade
+                * Com o rememberMe, a sessão expira depois de 2 semanas
+                * Com o token, posso determinar um tempo personalizado
+                * E a key é usada para gerar o hash md5, portanto deve ser bem segura :P
+                */
+                /*
+                * O Spring cria um cookie remember-me, que é guardado em uma in memory database,
+                * tal qual ele faz com o sessionId. Ou seja, aqui, toda vez que eu reinicio o server
+                * eu perco o cookie.
+                * Esse cookie contém o username e a data de expiração, em md5 hash
+                */
 //                .httpBasic(); //autenticação básica, não é possível fazer logout
     }
 
