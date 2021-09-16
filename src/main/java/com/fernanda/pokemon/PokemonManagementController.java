@@ -1,5 +1,6 @@
 package com.fernanda.pokemon;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,21 +11,13 @@ import java.util.List;
 @RequestMapping("admin/pokemon")
 public class PokemonManagementController {
 
-    private static final List<Pokemon> POKEMON_LIST = Arrays.asList(
-            new Pokemon(1, "Bulbasaur"),
-            new Pokemon(2, "Ivysaur"),
-            new Pokemon(3, "Venusaur"),
-            new Pokemon(4, "Charmander"),
-            new Pokemon(5, "Charmeleon"),
-            new Pokemon(6, "Charizard"),
-            new Pokemon(7, "Squirtle"),
-            new Pokemon(8, "Wartortle"),
-            new Pokemon(9, "Blastoise"));
+    @Autowired
+    private PokemonService pokemonService;
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_ADMINTRAINEE')") //aceita: hasRole('ROLE_') hasAnyRole('ROLE_') hasAuthority('permission') hasAnyAuthority('permission')
     public List<Pokemon> getAllPokemon() {
-        return POKEMON_LIST;
+        return pokemonService.getAllPokemon();
     }
 
     @PostMapping

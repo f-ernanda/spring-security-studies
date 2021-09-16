@@ -1,12 +1,24 @@
 package com.fernanda.pokemon;
 
-public class Pokemon {
+import org.hibernate.annotations.Table;
 
-    private final Integer pokemonId;
+import javax.persistence.*;
+
+@Entity
+@Table(appliesTo = "pokemon")
+public class Pokemon {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer pokemonId;
     private final String pokemonName;
 
     public Pokemon(Integer pokemonId, String pokemonName) {
         this.pokemonId = pokemonId;
+        this.pokemonName = pokemonName;
+    }
+
+    public Pokemon(String pokemonName) {
         this.pokemonName = pokemonName;
     }
 
